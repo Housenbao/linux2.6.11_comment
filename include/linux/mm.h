@@ -88,6 +88,7 @@ struct vm_area_struct {
 	pgprot_t vm_page_prot;		/* Access permissions of this VMA. */
 	/**
 	 * 线性区的标志。
+	 * 读写共享等标志
 	 */
 	unsigned long vm_flags;		/* Flags, listed below. */
 
@@ -913,7 +914,7 @@ extern struct vm_area_struct *vma_merge(struct mm_struct *,
 extern struct anon_vma *find_mergeable_anon_vma(struct vm_area_struct *);
 extern int split_vma(struct mm_struct *,
 	struct vm_area_struct *, unsigned long addr, int new_below);
-extern int insert_vm_struct(struct mm_struct *, struct vm_area_struct *);
+extern int insert_vm_struct(struct mm_struct *, struct vm_area_struct *);//把一个vma插入到mm_struct中
 extern void __vma_link_rb(struct mm_struct *, struct vm_area_struct *,
 	struct rb_node **, struct rb_node *);
 extern struct vm_area_struct *copy_vma(struct vm_area_struct **,

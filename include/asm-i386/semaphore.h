@@ -139,6 +139,7 @@ static inline void down(struct semaphore * sem)
 		"# atomic down operation\n\t"
 		/**
 		 * 首先减少并检查sem->count的值
+		 * 
 		 * 如果为负（说明减少前就是0或负）就挂起
 		 * 这里的减一操作是原子的
 		 * 请注意当count<0时，此时-1是不正确的，因为调用进程会被挂起，而没有真正的获得信号量。

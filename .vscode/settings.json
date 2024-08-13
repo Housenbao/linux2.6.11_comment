@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "module.h": "c",
+        "in.h": "c",
+        "socket.h": "c",
+        "timex.h": "c",
+        "time.h": "c",
+        "param.h": "c"
+    }
+}
