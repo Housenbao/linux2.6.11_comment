@@ -198,7 +198,7 @@ static inline int dup_mmap(struct mm_struct * mm, struct mm_struct * oldmm)
 	struct mempolicy *pol;
 
 	down_write(&oldmm->mmap_sem);
-	flush_cache_mm(current->mm);
+	flush_cache_mm(current->mm);//current是一个全局变量指向当前task_struct
 	mm->locked_vm = 0;
 	mm->mmap = NULL;
 	mm->mmap_cache = NULL;
@@ -214,6 +214,7 @@ static inline int dup_mmap(struct mm_struct * mm, struct mm_struct * oldmm)
 
 	/**
 	 * 复制父进程的每一个vm_area_struct线性区描述符，并把复制品插入到子进程的线性区链表和红黑树中。
+	 * mpnt遍历每一个父进程的vm_area_struct
 	 */
 	for (mpnt = current->mm->mmap ; mpnt ; mpnt = mpnt->vm_next) {
 		struct file *file;
@@ -230,10 +231,13 @@ static inline int dup_mmap(struct mm_struct * mm, struct mm_struct * oldmm)
 				goto fail_nomem;
 			charge = len;
 		}
+		// 从slab池里捞出一个vma出来给子进程
 		tmp = kmem_cache_alloc(vm_area_cachep, SLAB_KERNEL);
 		if (!tmp)
 			goto fail_nomem;
+		// 把vma的数据复制到子进程的tmp vma上
 		*tmp = *mpnt;
+		//vma策略也一起复制
 		pol = mpol_copy(vma_policy(mpnt));
 		retval = PTR_ERR(pol);
 		if (IS_ERR(pol))
@@ -264,7 +268,7 @@ static inline int dup_mmap(struct mm_struct * mm, struct mm_struct * oldmm)
 		 * link in first so that swapoff can see swap entries,
 		 * and try_to_unmap_one's find_vma find the new vma.
 		 */
-		spin_lock(&mm->page_table_lock);
+		spin_lock(&mm->page_table_lock);0
 		*pprev = tmp;
 		pprev = &tmp->vm_next;
 
@@ -277,6 +281,7 @@ static inline int dup_mmap(struct mm_struct * mm, struct mm_struct * oldmm)
 		 * copy_page_range创建必要的页表来映射线性区所包含的一组页。并且初始化新页表的表项。
 		 * 对私有、可写的页（无VM_SHARED标志，有VM_MAYWRITE标志），对父子进程都标记为只读的。
 		 * 为写时复制进行处理。
+		 * 拷贝父进程的页表到子进程
 		 */
 		retval = copy_page_range(mm, current->mm, tmp);
 		spin_unlock(&mm->page_table_lock);
@@ -521,7 +526,7 @@ static int copy_mm(unsigned long clone_flags, struct task_struct * tsk)
 		goto good_mm;
 	}
 
-	/**
+	/**新的进程，必须创建一个新的地址空间。
 	 * 没有CLONE_VM标志，就必须创建一个新的地址空间。
 	 * 必须要有地址空间，即使此时并没有分配内存。
 	 */
@@ -536,6 +541,7 @@ static int copy_mm(unsigned long clone_flags, struct task_struct * tsk)
 	/* Copy the current MM stuff.. */
 	/**
 	 * 并从当前进程复制mm的内容。
+	 * 直接复制所有的地址
 	 */
 	memcpy(mm, oldmm, sizeof(*mm));
 	if (!mm_init(mm))

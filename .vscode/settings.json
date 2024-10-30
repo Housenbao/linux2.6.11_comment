@@ -5,6 +5,17 @@
         "socket.h": "c",
         "timex.h": "c",
         "time.h": "c",
-        "param.h": "c"
-    }
+        "param.h": "c",
+        "mmzone.h": "c",
+        "config.h": "c",
+        "cache.h": "c",
+        "list.h": "c",
+        "rmap.h": "c",
+        "sched.h": "c",
+        "stdio.h": "c",
+        "thread_info.h": "c"
+    },
+    "C_Cpp.dimInactiveRegions": false,
+    "C_Cpp.autoAddFileAssociations": true,
+    "C_Cpp.intelliSenseEngine": "default"
 }

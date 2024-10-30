@@ -29,7 +29,11 @@ struct list_head {
 	struct list_head *next, *prev;
 };
 
+// 定义链表头初始化宏
+// 参数 name 为链表头的名称
+// 该宏用于初始化一个空链表，其中 head 和 tail 都指向同一个哨兵节点
 #define LIST_HEAD_INIT(name) { &(name), &(name) }
+
 
 /**
  * 创建一个新的链表。是新链表头的占位符，并且是一个哑元素。
@@ -38,9 +42,14 @@ struct list_head {
 #define LIST_HEAD(name) \
 	struct list_head name = LIST_HEAD_INIT(name)
 
+// 定义初始化链表头的宏
+// 参数 ptr 指向链表头结构体的指针
+// 初始化操作将链表头的 next 和 prev 指针都指向自身，表示链表为空
 #define INIT_LIST_HEAD(ptr) do { \
-	(ptr)->next = (ptr); (ptr)->prev = (ptr); \
+	(ptr)->next = (ptr); /* 将链表头的 next 指针指向自身 */ \
+	(ptr)->prev = (ptr); /* 将链表头的 prev 指针指向自身 */ \
 } while (0)
+
 
 /*
  * Insert a new entry between two known consecutive entries.

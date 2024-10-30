@@ -6,7 +6,7 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/include/",
                 "${workspaceFolder}/include/linux",
-                "${workspaceFolder}/include/asm-i386"
+                "${workspaceFolder}/include/asm"
 
             ],
             "defines": [],
